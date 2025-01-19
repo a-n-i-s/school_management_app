@@ -54,3 +54,27 @@ class TeacherAPITestCase(TestCase):
                                                          }
                             }]
         self.assertEqual(response, expected_response)
+
+
+class SubjectsAPITestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.subject_data = {
+            'name':'Math',
+            'classnsecions':'{}'
+        }
+        self.subject = Subjects.objects.create(**self.subject_data)
+
+    def test_get_all_subjects(self):
+        response = self.client.get(reverse('subject_api'))
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data),1)
+
+    def test_create_subject(self):
+        new_subject_data = {
+            'name': 'Bangla',
+            'classnsecions': '{}'
+        }
+        response = self.client.post(reverse('subject_api'),new_subject_data)
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        self.assertEqual(response.data.get('name'),new_subject_data.get('name'))
